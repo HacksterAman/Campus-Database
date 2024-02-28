@@ -13,6 +13,21 @@ CREATE TABLE Branches (
     FOREIGN KEY (CampusID) REFERENCES Campuses(CampusID)
 );
 
+
+-- Create Faculty table without DeptID foreign key constraint initially
+CREATE TABLE Faculty (
+    FacultyID INT PRIMARY KEY,
+    FirstName VARCHAR(50) NOT NULL,
+    LastName VARCHAR(50) NOT NULL,
+    DateOfBirth DATE,
+    Gender ENUM('Male', 'Female', 'Other'),
+    Email VARCHAR(100) UNIQUE,
+    ContactNumber VARCHAR(20),
+    Address VARCHAR(255)
+    -- DeptID INT, -- Temporarily removed, will add later
+    -- FOREIGN KEY (DeptID) REFERENCES Departments(DeptID) -- Temporarily removed, will add later
+);
+
 -- Table for departments
 CREATE TABLE Departments (
     DeptID INT PRIMARY KEY,
@@ -22,6 +37,13 @@ CREATE TABLE Departments (
     FOREIGN KEY (BranchID) REFERENCES Branches(BranchID),
     FOREIGN KEY (HODID) REFERENCES Faculty(FacultyID)
 );
+
+-- Alter Faculty table to add DeptID with FK constraint
+ALTER TABLE Faculty ADD COLUMN DeptID INT;
+ALTER TABLE Faculty ADD CONSTRAINT FK_Faculty_DeptID FOREIGN KEY (DeptID) REFERENCES Departments(DeptID);
+
+-- Alter Departments table to add HODID with FK constraint
+ALTER TABLE Departments ADD CONSTRAINT FK_Departments_HODID FOREIGN KEY (HODID) REFERENCES Faculty(FacultyID);
 
 -- Table for courses
 CREATE TABLE Courses (
@@ -55,20 +77,6 @@ CREATE TABLE Students (
     AdvisorID INT,
     FOREIGN KEY (DeptID) REFERENCES Departments(DeptID),
     FOREIGN KEY (AdvisorID) REFERENCES Faculty(FacultyID)
-);
-
--- Table for faculty
-CREATE TABLE Faculty (
-    FacultyID INT PRIMARY KEY,
-    FirstName VARCHAR(50) NOT NULL,
-    LastName VARCHAR(50) NOT NULL,
-    DateOfBirth DATE,
-    Gender ENUM('Male', 'Female', 'Other'),
-    Email VARCHAR(100) UNIQUE,
-    ContactNumber VARCHAR(20),
-    Address VARCHAR(255),
-    DeptID INT,
-    FOREIGN KEY (DeptID) REFERENCES Departments(DeptID)
 );
 
 -- Table for student enrollment

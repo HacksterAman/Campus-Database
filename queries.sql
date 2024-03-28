@@ -67,3 +67,31 @@ VALUES (1003, 2, 95);
 
 -- Commit the transaction
 COMMIT;
+
+-- DQL
+
+-- Create a view to retrieve student report card details along with related information
+CREATE VIEW StudentReportCardDetails AS
+SELECT 
+    Students.StudentID,
+    CONCAT(Students.FirstName, ' ', Students.LastName) AS StudentName,
+    Subjects.SubjectName,
+    ReportCards.MarksObtained,
+    ReportCards.Grade,
+    ReportCards.IsPass,
+    ReportCards.Remarks,
+    Departments.DeptName AS Department,
+    Branches.BranchName AS Branch,
+    Faculty.FirstName AS FacultyFirstName,
+    Faculty.LastName AS FacultyLastName
+FROM 
+    ReportCards
+INNER JOIN Students ON ReportCards.StudentID = Students.StudentID
+INNER JOIN Subjects ON ReportCards.SubjectID = Subjects.SubjectID
+INNER JOIN Departments ON Subjects.DeptID = Departments.DeptID
+INNER JOIN Branches ON Departments.BranchID = Branches.BranchID
+INNER JOIN Faculty ON Departments.HODID = Faculty.FacultyID;
+
+-- Query the view to retrieve student report card details
+SELECT * FROM StudentReportCardDetails;
+
